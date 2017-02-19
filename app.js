@@ -151,13 +151,6 @@
     const length = sortedData.length;
     const skipSize = ~~(length / width);
 
-    /*
-     *
-     * To map [A, B] --> [a, b]
-     * use this formula (val - A)*(b-a)/(B-A) + a
-     *
-     * */
-
     const tempScaleFactor = height / (maxTemp - minTemp);
     let scaleTemp = (temperature) => (temperature - minTemp) * tempScaleFactor;
 
@@ -188,8 +181,6 @@
     }
 
     graphProp(sortedData, (p) => scaleTemp(p.temperature))
-    //graphProp(sortedData, (p) => scaleLight(p.light))
-
   }
 
   function app() {
