@@ -1,4 +1,7 @@
 (function() {
+
+  const ONE_DAY_MILLIS = 24 * 60 * 60 * 1000;
+
   function toXML(text) {
     return new DOMParser().parseFromString(text, "text/xml");
   }
@@ -55,9 +58,8 @@
     return result;
   }
 
-  function twoDaysAgoPrefix() {
-    const oneDaysMillis = 24 * 60 * 60 * 1000;
-    const yesterday = new Date((+new Date) - oneDaysMillis);
+  function getPrefix(millisAgo) {
+    const yesterday = new Date((+new Date) - millisAgo);
     const monthNumber = yesterday.getMonth() + 1;
     const month = monthNumber < 10 ? '0' + monthNumber : '' + monthNumber;
     return `environment${yesterday.getFullYear()}/${month}/${yesterday.getDate()}`;
@@ -87,8 +89,8 @@
       })
   }
   
-  function listAllKeys(url) {
-    let search = 'list-type=2&start-after=' + twoDaysAgoPrefix() + '&max-keys=1000'
+  function listAllKeys(url, timePeriod) {
+    let search = 'list-type=2&start-after=' + getPrefix(timePeriod) + '&max-keys=1000'
     return listCall(url, search, '', [])
   }
 
@@ -108,13 +110,13 @@
     return Promise.all(filePromises);
   }
 
-  function listObjs(baseUrl) {
+  function listObjs(baseUrl, timePeriod) {
     let canvas = document.getElementById('data');
     let ctx = canvas.getContext('2d');
     ctx.font = '48px serif';
     ctx.clearRect(0, 0, canvas.width, canvas.height);   
     ctx.fillText('Fetching Keys...', 10, 50);
-    return listAllKeys(baseUrl);
+    return listAllKeys(baseUrl, timePeriod);
   }
 
   function flatten(arrays) {
@@ -194,7 +196,7 @@
 
     body.appendChild(canvas);
 
-    listObjs(baseUrl).then(fetchObjects.bind(null, baseUrl)).then((values) => {
+    listObjs(baseUrl, ONE_DAY_MILLIS).then(fetchObjects.bind(null, baseUrl)).then((values) => {
       let data = flatten(values);
       data.sort((a, b) => a.time - b.time);
       renderData(data);
