@@ -14,6 +14,9 @@
   }
 
   function tryJson(text) {
+    if (!text) {
+      return;
+    }
     try {
       let j = JSON.parse(text);
       if (j.time) {
@@ -40,19 +43,13 @@
   }
 
   function parseSensorData(textData) {
-    // this only works for non-nested sensor data
+    let lines = textData.split('\n');
     let result = [];
-    let startIndex = -1;
-    for (let i=0; i<=textData.length; i++) {
-      if (textData.charAt(i) === '{') {
-        startIndex = i;
-      }
 
-      if (textData.charAt(i) === '}') {
-        let maybeJson = tryJson(textData.substr(startIndex, i + 1));
-        if (maybeJson) {
-          result.push(maybeJson);
-        }
+    for (let line of lines) {
+      let maybeJson = tryJson(line);
+      if (maybeJson) {
+        result.push(maybeJson);
       }
     }
     return result;
@@ -151,15 +148,11 @@
     const width = window.innerWidth;
     const height = window.innerHeight;
     const length = sortedData.length;
-    const skipSize = ~~(length / width);
+    const skipSize = Math.max(~~(length / width), 1);
 
     const tempScaleFactor = height / (maxTemp - minTemp);
     let scaleTemp = (temperature) => (temperature - minTemp) * tempScaleFactor;
 
-    console.log('min temp = ' + minTemp)
-    console.log('scaled min temp = ' + scaleTemp(minTemp))
-    console.log('max temp = ' + maxTemp)
-    console.log('scaled max temp = ' + scaleTemp(maxTemp))
     const lightScaleFactor = height / (maxLight - minLight);
     let scaleLight = (light) => (light - minLight) * lightScaleFactor;
 
