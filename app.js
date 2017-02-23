@@ -98,7 +98,7 @@
     body.appendChild(canvas);
 
     const to = +new Date;
-    const from = to - ONE_HOUR_MILLIS;
+    const from = to - ONE_HOUR_MILLIS * 6;
 
     fetchObjects(from, to).then(renderData);
   }
