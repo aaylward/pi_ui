@@ -33,8 +33,6 @@
   function renderData(sortedData) {
     let minTemp = 9999999999;
     let maxTemp = -9999999999;
-    let minLight = 9999999999;
-    let maxLight = -9999999999;
     for (let p of sortedData) {
       if (p.temperature < minTemp) {
         minTemp = p.temperature;
@@ -42,46 +40,30 @@
       if (p.temperature > maxTemp) {
         maxTemp = p.temperature;
       }
-      if (p.light < minLight) {
-        minLight = p.light;
-      }
-      if (p.light > maxLight) {
-        maxLight = p.light;
-      }
     }
+
     let canvas = document.getElementById('data');
     let ctx = canvas.getContext('2d');
-
     ctx.clearRect(0, 0, canvas.width, canvas.height);   
 
     const width = window.innerWidth;
     const height = window.innerHeight;
     const length = sortedData.length;
-    const skipSize = Math.max(~~(length / width), 1);
+    const stepSize = Math.max(~~(length / width), 1);
 
     const tempScaleFactor = height / (maxTemp - minTemp);
     let scaleTemp = (temperature) => (temperature - minTemp) * tempScaleFactor;
 
-    const lightScaleFactor = height / (maxLight - minLight);
-    let scaleLight = (light) => (light - minLight) * lightScaleFactor;
-
     let graphProp = (props, fn) => {
       ctx.beginPath();
       ctx.moveTo(0, height);
-      let minValue = 9999999;
-      let xVal = 0;
-      for (let i=0; i<props.length; i+= skipSize) {
-        let val = fn(props[i]);
-        if (val < minValue) {
-          minValue = val;
-          xVal = i;
-        }
-        ctx.lineTo(i, val);
+
+      for (let i=0; i<props.length; i+= stepSize) {
+        ctx.lineTo(i, fn(props[i]));
       }
 
       ctx.strokeStyle = "Red";
       ctx.stroke();
-      console.log('min prop { ' + xVal + ', ' + (height - minValue) + ' }')
     }
 
     graphProp(sortedData, (p) => scaleTemp(p.temperature))
