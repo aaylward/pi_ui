@@ -43,8 +43,8 @@
       }
     }
 
-    let canvas = document.getElementById('data');
-    let ctx = canvas.getContext('2d');
+    const canvas = document.getElementById('data');
+    const ctx = canvas.getContext('2d');
     ctx.clearRect(0, 0, canvas.width, canvas.height);   
 
     const width = window.innerWidth;
@@ -77,6 +77,9 @@
     canvas.setAttribute('id', 'data');
     canvas.width = window.innerWidth - 20;
     canvas.height = window.innerHeight - 20;
+
+    const ctx = canvas.getContext('2d');
+    ctx.setFill
 
     body.appendChild(canvas);
 
