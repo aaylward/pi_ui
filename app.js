@@ -1,6 +1,7 @@
 (function() {
 
-  const ONE_DAY_MILLIS = 24 * 60 * 60 * 1000;
+  const ONE_HOUR_MILLIS = 60 * 60 * 1000;
+  const ONE_DAY_MILLIS = ONE_HOUR_MILLIS * 24;
 
   function prefetch() {
     let canvas = document.getElementById('data');
@@ -80,7 +81,7 @@
     body.appendChild(canvas);
 
     const to = +new Date;
-    const from = to - ONE_DAY_MILLIS;
+    const from = to - ONE_HOUR_MILLIS;
     const deviceId = 1;
 
     fetchObjects(deviceId, from, to).then(renderData);
