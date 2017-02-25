@@ -1,6 +1,6 @@
 (function() {
 
-  const ONE_HOUR_MILLIS = 60 * 60 * 1000;
+  const ONE_DAY_MILLIS = 24 * 60 * 60 * 1000;
 
   function prefetch() {
     let canvas = document.getElementById('data');
@@ -10,7 +10,7 @@
     ctx.fillText('Fetching Data...', 10, 50);
   }
 
-  function fetchObjects(from, to) {
+  function fetchObjects(deviceId, from, to) {
     prefetch();
     const requestConfig = {
       method: 'GET',
@@ -18,7 +18,7 @@
       cache: 'default'
     };
 
-    const request = new Request(`https://api.tippypi.com/v1/sensors?from=${from}&to=${to}`, requestConfig);
+    const request = new Request(`https://api.tippypi.com/v1/sensors?deviceId=${deviceId}&from=${from}&to=${to}`, requestConfig);
 
     return fetch(request).then(function(response) {
       const contentType = response.headers.get('content-type');
@@ -80,9 +80,10 @@
     body.appendChild(canvas);
 
     const to = +new Date;
-    const from = to - ONE_HOUR_MILLIS;
+    const from = to - ONE_DAY_MILLIS;
+    const deviceId = 1;
 
-    fetchObjects(from, to).then(renderData);
+    fetchObjects(deviceId, from, to).then(renderData);
   }
 
   app();
