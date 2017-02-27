@@ -83,8 +83,7 @@
 
     body.appendChild(canvas);
 
-    const now = +new Date;
-    const to = now - (now % ONE_HOUR_MILLIS);
+    const to = +new Date;
     const from = to - ONE_HOUR_MILLIS;
     const deviceId = 1;
 
