@@ -2,7 +2,7 @@
 
   const ONE_HOUR_MILLIS = 60 * 60 * 1000;
   const ONE_DAY_MILLIS = ONE_HOUR_MILLIS * 24;
-  const MINIMUM_ACCEPTABLE_SIZE = 500;
+  const MINIMUM_ACCEPTABLE_SIZE = 100;
 
   function prefetch() {
     let canvas = document.getElementById('data');
