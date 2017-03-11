@@ -2,6 +2,7 @@
 
   const ONE_HOUR_MILLIS = 60 * 60 * 1000;
   const ONE_DAY_MILLIS = ONE_HOUR_MILLIS * 24;
+  const MINIMUM_ACCEPTABLE_SIZE = 500;
 
   function prefetch() {
     let canvas = document.getElementById('data');
@@ -32,6 +33,15 @@
   }
 
   function renderData(sortedData) {
+    const canvas = document.getElementById('data');
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, canvas.width, canvas.height);   
+
+    if (sortedData.length < MINIMUM_ACCEPTABLE_SIZE) {
+      ctx.fillText('Hmmm, no data available for selected time range. Maybe check the pi?' , 10, 50);
+      return;
+    }
+
     let minTemp = 9999999999;
     let maxTemp = -9999999999;
     for (let p of sortedData) {
@@ -42,10 +52,6 @@
         maxTemp = p.temperature;
       }
     }
-
-    const canvas = document.getElementById('data');
-    const ctx = canvas.getContext('2d');
-    ctx.clearRect(0, 0, canvas.width, canvas.height);   
 
     const width = window.innerWidth;
     const height = window.innerHeight;
