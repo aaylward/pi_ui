@@ -32,6 +32,16 @@
     });
   }
 
+  function minMaxIteration(currentMin, currentMax, newValue) {
+    if (newValue < currentMin) {
+      currentMin = newValue;
+    }
+    if (newValue > currentMax) {
+      currentMax = newValue;
+    }
+    return [currentMin, currentMax];
+  }
+
   function renderData(sortedData) {
     const canvas = document.getElementById('data');
     const ctx = canvas.getContext('2d');
@@ -44,13 +54,17 @@
 
     let minTemp = 9999999999;
     let maxTemp = -9999999999;
+
+    let minPressure = 9999999999;
+    let maxPressure = -9999999999;
+
+    let minLight = 9999999999;
+    let maxLight = -9999999999;
+
     for (let p of sortedData) {
-      if (p.temperature < minTemp) {
-        minTemp = p.temperature;
-      }
-      if (p.temperature > maxTemp) {
-        maxTemp = p.temperature;
-      }
+      [minTemp, maxTemp] = minMaxIteration(minTemp, maxTemp, p.temperature);
+      [minPressure, maxPressure] = minMaxIteration(minPressure, maxPressure, p.pressure);
+      [minLight, maxLight] = minMaxIteration(minLight, maxLight, p.light);
     }
 
     const width = window.innerWidth;
@@ -61,19 +75,27 @@
     const tempScaleFactor = height / (maxTemp - minTemp);
     let scaleTemp = (temperature) => (temperature - minTemp) * tempScaleFactor;
 
-    let graphProp = (props, fn) => {
-      ctx.beginPath();
+    const pressureScaleFactor = height / (maxPressure - minPressure);
+    let scalePressure = (pressure) => (pressure - minPressure) * pressureScaleFactor;
+
+    const lightScaleFactor = height / (maxLight - minLight);
+    let scaleLight = (light) => (light - minLight) * lightScaleFactor;
+
+    let graphProp = (props, fn, color) => {
+      //ctx.beginPath();
       ctx.moveTo(0, height);
 
       for (let i=0; i<props.length; i+= stepSize) {
         ctx.lineTo(i, fn(props[i]));
       }
 
-      ctx.strokeStyle = "Red";
+      ctx.strokeStyle = color;
       ctx.stroke();
     }
 
-    graphProp(sortedData, (p) => scaleTemp(p.temperature))
+    graphProp(sortedData, (p) => scaleTemp(p.temperature), "Red")
+    graphProp(sortedData, (p) => scalePressure(p.pressure), "Blue")
+    graphProp(sortedData, (p) => scaleLight(p.light), "Green")
   }
 
   function app() {
