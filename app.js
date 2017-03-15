@@ -65,16 +65,8 @@
     let minTemp = 9999999999;
     let maxTemp = -9999999999;
 
-    let minPressure = 9999999999;
-    let maxPressure = -9999999999;
-
-    let minLight = 9999999999;
-    let maxLight = -9999999999;
-
     for (let p of sortedData) {
       [minTemp, maxTemp] = minMaxIteration(minTemp, maxTemp, p.temperature);
-      [minPressure, maxPressure] = minMaxIteration(minPressure, maxPressure, p.pressure);
-      [minLight, maxLight] = minMaxIteration(minLight, maxLight, p.light);
     }
 
     const width = window.innerWidth;
@@ -84,26 +76,16 @@
     const tempScaleFactor = height / (maxTemp - minTemp);
     let scaleTemp = (temperature) => (temperature - minTemp) * tempScaleFactor;
 
-    const pressureScaleFactor = height / (maxPressure - minPressure);
-    let scalePressure = (pressure) => (pressure - minPressure) * pressureScaleFactor;
-
-    const lightScaleFactor = height / (maxLight - minLight);
-    let scaleLight = (light) => (light - minLight) * lightScaleFactor;
-
     let graphProp = (props, fn, color) => {
       ctx.moveTo(0, height);
-
       for (let i=0; i<props.length; i+= stepSize) {
         ctx.lineTo(scaleTime(props[i].time), fn(props[i]));
       }
-
       ctx.strokeStyle = color;
       ctx.stroke();
     }
 
     graphProp(sortedData, (p) => scaleTemp(p.temperature), "Red")
-    graphProp(sortedData, (p) => scalePressure(p.pressure), "Blue")
-    graphProp(sortedData, (p) => scaleLight(p.light), "Green")
   }
 
   function app() {
