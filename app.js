@@ -47,6 +47,16 @@
     const ctx = canvas.getContext('2d');
     ctx.clearRect(0, 0, canvas.width, canvas.height);   
 
+    if (sortedData.length < 2) {
+      return;
+    }
+
+    const length = sortedData.length;
+    const startTime = sortedData[0].time;
+    const endTime = sortedData[sortedData.length - 2].time;
+
+    let scaleTime = (time) => (time - startTime) * (length / (endTime - startTime))
+
     if (sortedData.length < MINIMUM_ACCEPTABLE_SIZE) {
       ctx.fillText('Hmmm, no data available for selected time range. Maybe check the pi?' , 10, 50);
       return;
@@ -69,7 +79,6 @@
 
     const width = window.innerWidth;
     const height = window.innerHeight;
-    const length = sortedData.length;
     const stepSize = Math.max(~~(length / width), 1);
 
     const tempScaleFactor = height / (maxTemp - minTemp);
@@ -82,11 +91,10 @@
     let scaleLight = (light) => (light - minLight) * lightScaleFactor;
 
     let graphProp = (props, fn, color) => {
-      //ctx.beginPath();
       ctx.moveTo(0, height);
 
       for (let i=0; i<props.length; i+= stepSize) {
-        ctx.lineTo(i, fn(props[i]));
+        ctx.lineTo(scaleTime(props[i].time), fn(props[i]));
       }
 
       ctx.strokeStyle = color;
