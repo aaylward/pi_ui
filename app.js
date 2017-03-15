@@ -103,7 +103,7 @@
 
     const to = +new Date;
     const from = to - ONE_HOUR_MILLIS;
-    const deviceId = 1;
+    const deviceId = 2;
 
     fetchObjects(deviceId, from, to).then(renderData);
   }
