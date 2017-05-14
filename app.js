@@ -7,7 +7,7 @@
   function prefetch() {
     let canvas = document.getElementById('data');
     let ctx = canvas.getContext('2d');
-    ctx.font = '48px serif';
+    ctx.font = '48px Helvetica';
     ctx.clearRect(0, 0, canvas.width, canvas.height);   
     ctx.fillText('Fetching Data...', 10, 50);
   }
