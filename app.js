@@ -82,7 +82,8 @@
     const tempScaleFactor = height / (maxTemp - minTemp);
     let scaleTemp = (temperature) => (temperature - minTemp) * tempScaleFactor;
 
-    ctx.fillText(`average temperature over the last hour: ${averageFahrenheit} F`, 10, 50);
+    ctx.font = '18px helvetica';
+    ctx.strokeText(`average temperature over the last hour: ${averageFahrenheit} F`, 10, 50);
 
     let graphProp = (props, fn, color) => {
       ctx.moveTo(0, height);
