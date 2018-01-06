@@ -65,9 +65,14 @@
     let minTemp = 9999999999;
     let maxTemp = -9999999999;
 
+    let averageTemperature = 0;
     for (let p of sortedData) {
       [minTemp, maxTemp] = minMaxIteration(minTemp, maxTemp, p.temperature);
+      averageTemperature += p.temperature;
     }
+
+    averageTemperature /= sortedData.length;
+    const averageFahrenheit = averageTemperature * 9/5 + 32;
 
     const width = window.innerWidth;
     const height = window.innerHeight;
@@ -75,6 +80,8 @@
 
     const tempScaleFactor = height / (maxTemp - minTemp);
     let scaleTemp = (temperature) => (temperature - minTemp) * tempScaleFactor;
+
+    ctx.fillText(`average temperature over the last hour: ${averageFahrenheit} F`, 10, 50);
 
     let graphProp = (props, fn, color) => {
       ctx.moveTo(0, height);
