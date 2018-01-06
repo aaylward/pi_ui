@@ -72,6 +72,7 @@
     }
 
     averageTemperature /= sortedData.length;
+    averageTemperature -= 2;
     const averageFahrenheit = averageTemperature * 9/5 + 32;
 
     const width = window.innerWidth;
