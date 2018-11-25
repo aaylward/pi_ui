@@ -3,6 +3,11 @@
   const ONE_HOUR_MILLIS = 60 * 60 * 1000;
   const ONE_DAY_MILLIS = ONE_HOUR_MILLIS * 24;
   const MINIMUM_ACCEPTABLE_SIZE = 100;
+  const REQUEST_CONFIG = {
+    method: 'GET',
+    mode: 'cors',
+    cache: 'default'
+  };
 
   function prefetch() {
     let canvas = document.getElementById('data');
@@ -14,17 +19,12 @@
 
   function fetchObjects(deviceId, from, to) {
     prefetch();
-    const requestConfig = {
-      method: 'GET',
-      mode: 'cors',
-      cache: 'default'
-    };
 
-    const request = new Request(`https://api.tippypi.com/v1/sensors?deviceId=${deviceId}&from=${from}&to=${to}`, requestConfig);
+    const request = new Request(`https://api.tippypi.com/v1/sensors?deviceId=${deviceId}&from=${from}&to=${to}`, REQUEST_CONFIG);
 
     return fetch(request).then(function(response) {
       const contentType = response.headers.get('content-type');
-      if(contentType && contentType.indexOf('json') !== -1) {
+      if (contentType && contentType.indexOf('json') !== -1) {
         return response.json();
       } else {
         throw new Error('failed to retrieve data');
@@ -42,25 +42,25 @@
     return [currentMin, currentMax];
   }
 
+  function noDataAvailable(ctx) {
+    ctx.fillText('Hmmm, no data available for selected time range. Maybe check the pi?' , 10, 50);
+  }
+
   function renderData(sortedData) {
     const canvas = document.getElementById('data');
     const ctx = canvas.getContext('2d');
-    ctx.clearRect(0, 0, canvas.width, canvas.height);   
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    if (sortedData.length < 2) {
+    if (sortedData.length < MINIMUM_ACCEPTABLE_SIZE) {
+      noDataAvailable(ctx);
       return;
     }
 
     const length = sortedData.length;
     const startTime = sortedData[0].time;
-    const endTime = sortedData[sortedData.length - 2].time;
+    const endTime = sortedData[sortedData.length - 1].time;
 
     let scaleTime = (time) => (time - startTime) * (length / (endTime - startTime))
-
-    if (sortedData.length < MINIMUM_ACCEPTABLE_SIZE) {
-      ctx.fillText('Hmmm, no data available for selected time range. Maybe check the pi?' , 10, 50);
-      return;
-    }
 
     let minTemp = 9999999999;
     let maxTemp = -9999999999;
